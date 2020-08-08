@@ -8,7 +8,7 @@
         HTMLCollection.prototype.forEach = Array.prototype.forEach;
     }
 
-
+    const hotKey = 27;
     // Fake site list
     const fakeSites = [
         'https://www.wikipedia.org/',
@@ -29,6 +29,18 @@
     function getRandomSite() {
         return fakeSites[Math.floor(Math.random() * fakeSites.length)];
     }
+
+    function exitWebsite() {
+        // Clear DOM to tackle with slow internet connection
+        document.title = 'Unable to load the page';
+        document.body.innerHTML = 'Unable to load the page';
+
+        // Open random pages
+        window.open(getRandomSite());
+        setTimeout(function () {
+            document.location.replace(getRandomSite());
+        }, 100);
+    }
     
     function initQuickExit() {
         // Change default anhor tag behaviour to replace history item
@@ -46,16 +58,20 @@
 
         // Replace current page from history with random site
         document.getElementById('quick-exit').addEventListener('click', function () {
-            // Clear DOM to tackle with slow internet connection
-            document.title = 'Unable to load the page';
-            document.body.innerHTML = 'Unable to load the page';
-
-            // Open random pages
-            window.open(getRandomSite());
-            setTimeout(function () {
-                // document.location.replace(getRandomSite());
-            }, 100);
+            exitWebsite();
         });
+
+        document.addEventListener('keydown', function(e) {
+            if(e.keyCode === hotKey) {
+                exitWebsite();
+                if(e) {
+                    e.preventDefault();
+                    e.returnValue = false; // IE support
+                }
+                return false;
+            }
+        });
+
     }
 
     initQuickExit();
